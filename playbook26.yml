@@ -1,0 +1,47 @@
+---
+- name: Configure apache/httpd based on Os platform
+  hosts: all
+  tasks:
+    - name: Install apache2 on Ubuntu servers
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"
+    - name: Install httpd on Redhat servers
+      yum:
+        name: httpd
+        state: present
+        update_cache: yes
+      when: ansible_distribution == "RedHat"
+    - name: Edit the idnex.html file
+      copy:
+        content: "Welcome to IntelliQ"
+        dest: /var/www/html/index.html
+    - name: Restart apache2 on Ubuntu
+      service:
+        name: apache2
+        state: restarted
+      when: ansible_distribution == "Ubuntu"
+    - name: Restart https on Redhat
+      service:
+        name: httpd
+        state: restarted
+      when: ansible_distribution == "RedHat"
+    - name: Check apache/https response on all server
+      uri:
+        url: "{{item}}"
+        status_code: 200
+      with_items:
+        - http://172.31.59.208
+        - http://172.31.57.12
+        - http://172.31.14.207
+...
+
+
+
+
+
+
+
+

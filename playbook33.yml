@@ -1,0 +1,14 @@
+---
+- name: Login into dockerhub
+  hosts: 172.31.59.208
+  tasks:
+    - name: Login
+      docker_login:
+        username: intelliqit
+        password: intelliqit
+        
+    - name: Upload the docker image
+      docker_image:
+        name: intelliqit/nginx11
+        push: true
+        source: local
